@@ -7,7 +7,7 @@ taskselのインストール
 ```
 $ sudo apt install tasksel
 ```
-taskselの起動
+taskselの起動とLAMP serverのインストール
 ```
 $ sudo tasksel
 ```
@@ -35,10 +35,22 @@ $ sudo systemctl restart mydql.service
 ```
 $ sudo apt install wordpress-l10n
 ```
-/usr/share/doc/wordpress/を読む。
+インストールされたWordPressのプログラムのシンボリックリンクをapache2のルートディレクトリの下に作成する。これによりhttp://localhost/blogでアクセスできるようになる。
 ```
-$ cd /usr/share/doc/wordpress/
-$ sudo gzip -d setup-mysql.gz
-$ sudo bash setup-mysql -n wordpress example.jp
+$ sudo ln -s /usr/share/wordpress /var/www/html/blog
 ```
-### Apache2 Webサーバの設定
+/usr/share/doc/wordpress/README.Debianの内容に従いMySQLの設定をする。下の例だとMySQLのユーザ名とテーブル名をwordpressとしている。またhttp://localhostでアクセスできるように設定する。/etc/wordpress/config-localhost.phpが作成される。
+```
+$ cd /usr/share/doc/wordpress/examples
+$ sudo gzip -d /usr/share/doc/wordpress/examples/setup-mysql.gz
+$ sudo bash /usr/share/doc/wordpress/examples/setup-mysql -n wordpress localhost
+```
+## WordPressの設定
+/etc/wordpress/config-localhost.phpを編集する。日本語表示にしたいので以下の行を追加する。
+```
+define('WPLANG', 'ja'); # 言語を日本語に
+```
+apache2を再起動する。
+```
+$ sudo service apache2 reload
+```
