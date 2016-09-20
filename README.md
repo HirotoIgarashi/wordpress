@@ -1,5 +1,5 @@
 # wordpress
-Ubuntuにwordpressをインストールする。
+ubuntu 16.04.1 LTSにwordpressをインストールする。
 
 ## 前提
 LAMP(Linux+Apache+MySQL+PHP)をインストールするためにtaskselをインストールする。
@@ -12,6 +12,11 @@ $ sudo tasksel
 ```
 rスペースキーでLAMP serverにチェックを入れて<了解>をクリック。MySQLの"root"ユーザに対する新しいパスワードの入力を求められる。もう一度、確認のためにパスワードの入力を求められる。
 
+次にPHPのextensionsをインストールする。
+```
+$ sudo apt update
+$ sudo apt install php-curl php-gd php-mbstring php-mcrypt php-xml php-xmlrpc
+```
 Apache2のインストール。taskselでLAMP serverをインストールした場合は不要。
 ```
 $ sudo apt install apache2
