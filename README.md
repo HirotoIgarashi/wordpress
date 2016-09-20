@@ -37,7 +37,6 @@ $ sudo apt install wordpress-l10n
 wp-contentのパーミッションを変更する。
 ```
 $ sudo chown -R www-data:www-data /usr/share/wordpress/wp-content/
-$ sudo chown -R www-data:www-data /var/lib/wordpress/wp-content/
 $ sudo chown -R www-data:www-data /var/www/html/blog
 $ sudo chmod 755 /var/www/html/blog
 
@@ -52,7 +51,7 @@ $ sudo gzip -d /usr/share/doc/wordpress/examples/setup-mysql.gz
 $ sudo bash /usr/share/doc/wordpress/examples/setup-mysql -n wordpress localhost
 ```
 ## WordPressの設定
-/etc/wordpress/config-localhost.phpを編集する。日本語表示にしたいので以下の行を追加する。
+/etc/wordpress/config-localhost.phpを編集する。
 ```
 define('WP_CONTENT_DIR', '/var/www/html/blog/wp-content'); # /var/lib/wordpress/wp-contentから変更する。
 define('WPLANG', 'ja'); # 日本語表示にする
