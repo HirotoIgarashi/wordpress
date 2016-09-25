@@ -22,6 +22,13 @@ Apache2のインストール。taskselでLAMP serverをインストールした�
 ```
 $ sudo apt install apache2
 ```
+.htaccess Overridesを有効にする。
+```
+$ sudo vim /etc/apache2/apache2.conf
+<Directory /var/www/html/>
+  AllowOverride All
+</Directory>
+```
 vhostとrewrite
 ```
 $ sudo a2enmode vhost_alias
@@ -43,6 +50,91 @@ $ sudo systemctl restart mydql.service
 ```
 
 ## WordPressのインストールと設定
+wordpress.orgの最新版をインストールする場合
+### ダウンロード・解凍
+```
+$ cd /tmp
+$ curl -O https://wordpress.org/latest.tar.gz
+or
+$ wget http://wordpress.org/latest.tar.gz
+$ tar xzvf latest.tar.gz
+$ touch /tmp/wordpress/.htaccess
+$ chmod 660 /tmp/wordpress/.htaccess
+$ cp /tmp/wordpress/wp-config-sample.php /tmp/wordpress/wp-config.ph
+$ mkdir /tmp/wordpress/wp-content/upgrade
+$ sudo cp -a /tmp/wordpress/. /var/www/html/blog
+$ sudo chown -R hiroto:www-data /var/www/html/blog
+wordpressをアップグレードするときは一時的に
+$ sudo chown -R www-data /var/www/html/blog
+wordpressのアップグレードが終わったら
+$ sudo chown -R hiroto /var/www/html/blog
+$ sudo find /var/www/html/blog -type d -exec chmod g+s {} \;
+$ sudo chmod g+w /var/www/html/blog/wp-content
+$ sudo chmod -R g+w /var/www/html/blog/wp-content/themes
+$ sudo chmod -R g+w /var/www/html/blog/wp-content/plugins
+$ curl -s https://api.wordpress.org/secret-key/1.1/salt/
+
+```
+
+### データベースとユーザの作成
+MySQLクライアントを利用します。
+
+
+databasename: wordpress,wordpressusername: wordpress, hostname: localhost, password: xxxxxxx
+```
+$ mysql -u root -p
+mysql> CREATE DATABASE databasename;
+or
+mysql> CREATE DATABASE databasename DEFAULT CHARACTER SET urf8 COLLATE utf8_unicode_ci;
+
+mysql> GRANT ALL PRIVILEGES on databasename.* TO "wordpressusername"@"hostname"
+    -> IDENTIFIED BY "password";
+or 
+mysql> CRANT ALL ON wordpress.* TO 'wordpressusername'@'localhost' IDENTIFIED BY 'password';
+
+mysql> FLUSH PRIVILEGES;
+mysql> EXIT
+BYE
+$
+```
+
+### wp-config.phpの設定
+データベース情報と秘密鍵の値を記入。
+
+```
+$ cp wp-config-sample.php wp-config.php
+```
+wp-config.phpの編集
+```
+define('DB_NAME', 'wordpress');
+define('DB_USER', 'wordpress');
+define('DB_PASSWORD', 'xxxxxxx');
+define('DB_HOST', 'localhost');
+define('DB_CHARSET', '');
+define('DB_COLLATE', '');
+
+define('FS_METHOD', 'direct');
+define('WPLANG', 'ja');
+```
+
+### ファイルのアップロード
+```
+$ sudo cp -fr wordpress/* /var/www/html/blog
+```
+
+### インストールスクリプトの実行
+ブラウザでwp-admin/install.phpへアクセスし、インストールスクリプトを実行。
+ルートディレクトリにWordPressファイルを設置した場合
+```
+http://example.com/wp-admin/install.php
+```
+blogというサブディレクトリにWordPressファイルを設置した場合
+```
+http://example.com/blog/wp-admin/install.php
+```
+サイト名、パスワード、メールアドレスを入力する。
+
+## Ubuntuのリポジトリを利用する場合
 ```
 $ sudo apt install wordpress-l10n
 ```
